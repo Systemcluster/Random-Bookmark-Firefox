@@ -210,12 +210,6 @@
           </vbox>
         </radiogroup>
       </groupbox>
-
-      <groupbox align="vertical">
-        <caption label="&settings.results;" />
-        <checkbox preference="normalize" label="&settings.normalized;" id="normalize" />
-      </groupbox>
-
       <groupbox align="vertical">
         <caption label="&settings.source;" />
         <menulist id="source">
@@ -226,6 +220,11 @@
             <menuitem value="unfiled" label="&settings.source.unfiled;" />
           </menupopup>
         </menulist>
+      </groupbox>
+
+      <groupbox align="vertical">
+        <caption label="&settings.results;" />
+        <checkbox preference="normalize" label="&settings.normalized;" id="normalize" />
       </groupbox>
 
       <groupbox align="vertical">
