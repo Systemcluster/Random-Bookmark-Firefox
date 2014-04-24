@@ -1,7 +1,7 @@
 all: osx
 
 osx:
-	zip -vr dist/random-bookmark-osx.xpi ./src/ -x *xpi* -x *.DS_Store -x *.dropbox -x *.git -x .git
+	zip -vr dist/random-bookmark.xpi ./src/ -x *xpi* -x *.DS_Store -x *.dropbox -x *.git -x .git
 
 windows:
 	cd src
