@@ -1,0 +1,38 @@
+<!ENTITY settings.buttonstyle 					"Aussehen des Buttons">
+<!ENTITY settings.buttonstyle.description 		"Stellen Sie das Aussehens des Buttons nach Ihren Vorlieben ein.">
+<!ENTITY settings.buttonstyle.classic 			"Klassisch">
+<!ENTITY settings.buttonstyle.symbiose			"Symbiose">
+<!ENTITY settings.buttonstyle.bookmark			"Lesezeichen">
+<!ENTITY settings.buttonstyle.bookmark-black 	"Lesezeichen noir">
+
+<!ENTITY settings.dialog.accept "Speichern">
+<!ENTITY settings.dialog.cancel "Abbrechen">
+<!ENTITY settings.dialog.help   "Hilfe">
+
+<!ENTITY settings.dialog.accept.hkey "S">
+<!ENTITY settings.dialog.cancel.hkey "A">
+<!ENTITY settings.dialog.help.hkey "H">
+
+<!ENTITY settings.type "Auswahlquelle">
+<!ENTITY settings.type.description "Quelle, aus welcher die zu öffnende, zufällige Seite ausgewählt werden soll.">
+
+<!ENTITY settings.type.bookmark "Lesezeichen">
+<!ENTITY settings.type.history "Verlauf">
+<!ENTITY settings.type.combined "Kombiniert">
+
+<!ENTITY settings.results "Ergebnisse">
+<!ENTITY settings.normalized "Normalisiert">
+
+<!ENTITY settings.source "Lesezeichenquelle">
+<!ENTITY settings.source.root "Alle Lesezeichen">
+<!ENTITY settings.source.menu "Lesezeichenmenü">
+<!ENTITY settings.source.toolbar "Lesezeichen Toolbar">
+<!ENTITY settings.source.unfiled "Unsortierte Lesezeichen">
+
+<!ENTITY settings.filter "Filter">
+<!ENTITY settings.filter_enabled "Filtern aktivieren">
+
+<!ENTITY button.addfilter "Filter hinzufügen">
+<!ENTITY button.removefilter "Filter entfernen">
+
+<!ENTITY settings.help "Normalisierte Ergebnisse: Ist 'normalisierte Ergebnisse' aktiviert, führen doppelte Verlaufeinträge nicht zu einer erhöhten Auswahlchance. Dies hat allerdings Einfluss auf die Auswahlgeschwindigkeit. \n\nFiltern: Bei aktiviertem Filtern trifft die von Random Bookmark geöffnete Seite auf einen der angegebenen, aktivierten Filter zu. Dieser kann eine einfache Adressangabe (wie z.b. youtube.com/watch) oder ein regulärer Ausdruck sein (für fortgeschrittene Benutzer).">

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?><!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. --><RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+    <Description about="urn:mozilla:install-manifest">
+        <em:id>jid0-Nij4w8dVNyt4uDDdw6bTGkSRb4o@jetpack</em:id>
+        <em:version>2.5.2</em:version>
+        <em:type>2</em:type>
+        <em:bootstrap>true</em:bootstrap>
+        <em:unpack>false</em:unpack>
+
+        <!-- Firefox -->
+        <em:targetApplication>
+            <Description>
+                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+                <em:minVersion>10.0</em:minVersion>
+                <em:maxVersion>30.0</em:maxVersion>
+            </Description>
+        </em:targetApplication>
+
+    <!-- Frontend MetaData -->
+    <em:name>Random Bookmark</em:name>
+
+    <em:creator>Christian Sdunek</em:creator>
+    <em:contributor>Vinzenz Boening</em:contributor>
+
+    <em:homepageURL>https://addons.mozilla.org/firefox/addon/random-bookmark/</em:homepageURL>
+    <em:optionsURL>chrome://random-bookmark/content/settingsDialog.xul</em:optionsURL>
+    <em:optionsType>1</em:optionsType>
+
+    <em:iconURL>chrome://random-bookmark/skin/icon48.png</em:iconURL>
+    <em:icon64URL>chrome://random-bookmark/skin/icon64.png</em:icon64URL>
+
+    <!-- Localization -->
+    <!-- de-DE -->
+    <em:localized>
+        <Description>
+            <em:locale>de-DE</em:locale>
+            <em:name>Random Bookmark</em:name>
+            <em:description>Öffnet ein zufälliges Lesezeichen oder einen zufälligen Verlaufseintrag.</em:description>
+            <em:translator>Christian Sdunek</em:translator>
+        </Description>
+    </em:localized>
+    <!-- en-EN -->
+    <em:localized>
+        <Description>
+            <em:locale>en-US</em:locale>
+            <em:name>Random Bookmark</em:name>
+            <em:description>Opens a random bookmark or history element.</em:description>
+            <em:translator>Christian Sdunek</em:translator>
+        </Description>
+    </em:localized>
+
+    </Description>
+</RDF>

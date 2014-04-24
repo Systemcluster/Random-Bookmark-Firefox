@@ -1,0 +1,5 @@
+content random-bookmark chrome/content/
+skin    random-bookmark classic/1.0 chrome/skin/
+
+locale random-bookmark de-DE chrome/locale/de-DE/
+locale random-bookmark en-US chrome/locale/en-US/

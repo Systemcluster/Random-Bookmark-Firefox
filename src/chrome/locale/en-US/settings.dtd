@@ -1,0 +1,38 @@
+<!ENTITY settings.buttonstyle 					"Button style">
+<!ENTITY settings.buttonstyle.description 		"Setup the style of the button after your preference.">
+<!ENTITY settings.buttonstyle.classic 			"Classic">
+<!ENTITY settings.buttonstyle.symbiose			"Symbiose">
+<!ENTITY settings.buttonstyle.bookmark			"Bookmark">
+<!ENTITY settings.buttonstyle.bookmark-black 	"Bookmark noir">
+
+<!ENTITY settings.dialog.accept "Save">
+<!ENTITY settings.dialog.cancel "Cancel">
+<!ENTITY settings.dialog.help   "Help">
+
+<!ENTITY settings.dialog.accept.hkey "S">
+<!ENTITY settings.dialog.cancel.hkey "C">
+<!ENTITY settings.dialog.help.hkey "H">
+
+<!ENTITY settings.type "Selection source">
+<!ENTITY settings.type.description "Source, from which the page to open will be selected.">
+
+<!ENTITY settings.type.bookmark "Bookmark">
+<!ENTITY settings.type.history "History">
+<!ENTITY settings.type.combined "Combined">
+
+<!ENTITY settings.results "Results">
+<!ENTITY settings.normalized "Normalized">
+
+<!ENTITY settings.source "Bookmark Source">
+<!ENTITY settings.source.root "All Bookmarks">
+<!ENTITY settings.source.menu "Bookmarks Menu">
+<!ENTITY settings.source.toolbar "Bookmarks Toolbar">
+<!ENTITY settings.source.unfiled "Unfiled Bookmarks">
+
+<!ENTITY settings.filter "Filter">
+<!ENTITY settings.filter_enabled "Enable filtering">
+
+<!ENTITY button.addfilter "Add Filter">
+<!ENTITY button.removefilter "Remove Filter">
+
+<!ENTITY settings.help "Normalized Results: With 'normalized results' enabled, duplicate history entries don't lead to a higher selection chance. However, this will impact the speed of the selection. \n\nFilter: Is the filtration enabled, the page that will be selected to be opened will apply to one of the enabled filters. A filter can be a simple adress (e.g. youtube.com/watch) or a regular expression (for advanced users).">

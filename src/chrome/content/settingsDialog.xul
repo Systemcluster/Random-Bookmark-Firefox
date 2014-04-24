@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+
+<!DOCTYPE settings SYSTEM "chrome://random-bookmark/locale/settings.dtd">
+
+<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+        id="extensions.random-bookmark.settingsDialog" title="Random Bookmark Settings" 
+        type="ext:options" 
+        onload="onLoad();" 
+        buttons="extra1,extra2,cancel" 
+        defaultButton="extra1" 
+        buttonlabelextra1="&settings.dialog.accept;" 
+        ondialogextra1="return doSave();" 
+        buttonlabelextra2="&settings.dialog.help;" 
+        ondialogextra2="doHelp()" 
+        buttonlabelcancel="&settings.dialog.cancel;"
+        ondialogcancel="doCancel();"
+        >
+
+  <script>
+    const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+    var filterCount = 0;
+    var maxFilters = 7;
+    var filterNum = 0;
+
+    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.random-bookmark.");
+
+    function onLoad() {
+      window.sizeToContent();
+
+      var enableFilter = document.getElementById("enableFilter");
+      enableFilter.addEventListener("click", function(evt){
+        toggleFilter(enableFilter.hasAttribute("checked"));
+      });
+
+      toggleFilter(enableFilter.hasAttribute("checked"));
+
+      filterCount = countFilters();
+
+      loadFilters();
+
+      if(!prefs.getCharPref("source") || 1 > prefs.getCharPref("source").length) {
+        document.getElementById("source").value = "root";
+      }
+      else {
+        document.getElementById("source").value = prefs.getCharPref("source");
+      }
+
+      var normalize = prefs.getBoolPref("normalize");
+      if(normalize) {
+        document.getElementById("normalize").setAttribute("checked", normalize);
+      }
+
+    }
+    function doSave() {
+
+      prefs.setBoolPref("filters_enabled", document.getElementById("enableFilter").hasAttribute("checked"));
+      
+      var filters = JSON.stringify(getAllFilters());
+      if(1 > filters.length)
+        prefs.setCharPref("filters", "");
+      else
+        prefs.setCharPref("filters", filters);
+
+      prefs.setCharPref("source", document.getElementById("source").value);
+
+      prefs.setBoolPref("normalize", document.getElementById("normalize").hasAttribute("checked"));
+
+      window.setTimeout(function(){window.close();}, 1);
+
+      return true;
+    }
+    function doCancel() {
+      return true;
+    }
+    function doHelp() {
+      window.alert("&settings.help;");
+    }
+
+    function loadFilters() {
+      var filters = prefs.getCharPref("filters");
+      if(!filters||filters.length===0)
+        return;
+      filters = JSON.parse(filters);
+      if(!filters||filters.length===0)
+        return;
+      for(var i = 0; filters.length > i; ++i) {
+        addFilter("filtercontainer", filters[i][0], filters[i][1]);
+      }
+
+      var enabled = prefs.getBoolPref("filters_enabled");
+      document.getElementById("enableFilter").setAttribute("checked", enabled);
+      toggleFilter(enabled);
+    }
+
+    function addFilter(id, content, active) {
+      if(filterCount >= maxFilters)
+        return;
+
+      var box = document.getElementById(id);
+      var subbox = document.createElementNS(XUL_NS, "hbox");
+      var textbox = document.createElementNS(XUL_NS, "textbox");
+      var del = document.createElementNS(XUL_NS, "button");
+      del.setAttribute("label", "X");      
+      del.setAttribute("style", "min-width:32px;max-width:32px;width:32px;color:#000;");
+      del.addEventListener("click", function(){
+        box.removeChild(subbox);
+        filterCount = countFilters();
+        if(maxFilters > filterCount)
+          document.getElementById("addfilter").setAttribute("disabled", "false");
+        window.sizeToContent();
+      });
+      del.setAttribute("tooltiptext", "&button.removefilter;");
+      
+      textbox.setAttribute("id", "tb-"+filterNum);
+      textbox.setAttribute("class", "filterinput filtertextbox");
+      textbox.setAttribute("flex", "1");
+      if(content)
+        textbox.setAttribute("value", content);
+
+      var checkbox = document.createElementNS(XUL_NS, "checkbox");
+      checkbox.setAttribute("class", "filterinput filtercheckbox disableable");
+      if(active!==false)
+        checkbox.setAttribute("checked", true);
+
+      subbox.setAttribute("class", "filterbox");
+      subbox.setAttribute("id", "subbox-"+filterNum);
+      subbox.appendChild(checkbox);
+      subbox.appendChild(textbox);
+      subbox.appendChild(del);
+
+      box.appendChild(subbox);
+
+      window.sizeToContent();
+
+      filterCount = countFilters();
+      if(filterCount >= maxFilters) {
+        document.getElementById("addfilter").setAttribute("disabled", "true");
+      }
+    }
+
+    function toggleFilter(enable) {
+      var vars = document.getElementsByClassName("disableable");
+      for(var i = 0; vars.length > i;++i) {
+        vars[i].setAttribute("disabled", enable?false:true);
+      }
+    }
+    function toggleOneFilter(enable, id) {
+      var element = document.getElementById(id);
+      element.setAttribute(enable);
+    }
+
+    function countFilters() {
+      var vars = document.getElementsByClassName("filtertextbox");
+      var count = vars.length;
+      
+      return count;
+    }
+
+    function getAllFilters() {
+      var filters = [];
+      var vars = document.getElementsByClassName("filtertextbox");
+      var actives = document.getElementsByClassName("filtercheckbox");
+      for(var i = 0; vars.length > i;++i) {
+        var inside = [];
+        if(vars[i].value === "")
+          continue;
+        inside.push(vars[i].value);
+
+        inside.push(actives[i].hasAttribute("checked"));
+        filters.push(inside);
+      }
+      return filters;
+    }
+
+
+  </script>
+
+  <prefpane align="vertical">
+  
+    <vbox width="300px">
+
+      <preferences>
+        <preference id="buttonstyle" name="extensions.random-bookmark.buttonstyle" type="string" instantApply="true" />
+        <preference id="type" name="extensions.random-bookmark.type" type="string" instantApply="true" />
+        <preference id="filters" name="extensions.random-bookmark.filters" type="string" instantApply="false" />
+        <preference id="filters_enabled" name="extensions.random-bookmark.filters_enabled" type="bool" instantApply="true" />
+      </preferences>
+
+      <groupbox align="vertical">
+        <caption label="&settings.buttonstyle;"/>
+        <radiogroup preference="buttonstyle" onChange="">
+          <hbox>
+            <radio value="classic" src="chrome://random-bookmark/skin/icon16-classic.png" />
+            <radio value="symbiose" src="chrome://random-bookmark/skin/icon16-symbiose.png" />
+            <radio value="bookmark" src="chrome://random-bookmark/skin/icon16-bookmark.png" />
+            <radio value="bookmark-black" src="chrome://random-bookmark/skin/icon16-bookmark-black.png" />
+          </hbox>
+        </radiogroup>
+      </groupbox>
+      
+      <groupbox align="vertical">
+        <caption label="&settings.type;" />
+        <radiogroup preference="type">
+          <vbox>
+            <radio value="bookmark" src="chrome://random-bookmark/skin/icon16-bookmark-bookmark.png" label="&settings.type.bookmark;" />
+            <radio value="history" src="chrome://random-bookmark/skin/icon16-bookmark-history.png" label="&settings.type.history;" />
+            <radio value="combined" src="chrome://random-bookmark/skin/icon16-bookmark-combined.png" label="&settings.type.combined;" />
+          </vbox>
+        </radiogroup>
+      </groupbox>
+
+      <groupbox align="vertical">
+        <caption label="&settings.results;" />
+        <checkbox preference="normalize" label="&settings.normalized;" id="normalize" />
+      </groupbox>
+
+      <groupbox align="vertical">
+        <caption label="&settings.source;" />
+        <menulist id="source">
+          <menupopup>
+            <menuitem value="root" label="&settings.source.root;" />
+            <menuitem value="menu" label="&settings.source.menu;" />
+            <menuitem value="toolbar" label="&settings.source.toolbar;" />
+            <menuitem value="unfiled" label="&settings.source.unfiled;" />
+          </menupopup>
+        </menulist>
+      </groupbox>
+
+      <groupbox align="vertical">
+        <caption label="&settings.filter;" />
+        <textbox preference="filters" hidden="true" />
+        <checkbox preference="filters_enabled" label="&settings.filter_enabled;" id="enableFilter" />
+        <button oncommand="addFilter('filtercontainer');" label="&button.addfilter;" width="320px" class="filterinput disableable" id="addfilter"/>
+        
+        <vbox id="filtercontainer" width="320px">
+
+        </vbox>
+      </groupbox>
+
+    </vbox>
+
+  </prefpane>
+
+</prefwindow>
