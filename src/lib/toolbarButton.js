@@ -229,7 +229,7 @@ function initializeButton(settings, document) {
  */
 function getBrowserWindows() {
 	let list = [];
-	let windows = Services.ww.getWindowEnumerator("navigator:browser");
+	let windows = Services.wm.getEnumerator("navigator:browser");
 	while (windows.hasMoreElements()) {
 		let window = windows.getNext().QueryInterface(Ci.nsIDOMWindow);
 		list.push(window);
@@ -237,10 +237,50 @@ function getBrowserWindows() {
 	return list;
 }
 
+
+
+
+/**
+ * removes a toolbar button with the given id
+ */
+function removeButton(id, toolbar, fromCurrentset) {
+	let windows = getBrowserWindows();
+	for(let i = 0; i < windows.length; ++i) 
+	{
+		var document = windows[i].document;	
+		var button = document.getElementById(id);
+		if (button) {
+			try {
+				button.parentNode.removeChild(button);
+			}
+			catch(e) {
+				//console.log(e);
+			}
+		}
+		if(fromCurrentset === true) {
+			// additionally remove the button from the currentset
+			let currentset = toolbar.getAttribute("currentset").split(",");
+			if(currentset.indexOf(id) > -1) {
+				let newCurrentset = [];
+				for(let i = 0; i < currentset.length; ++i) {
+					if(currentset[i] !== id)
+						newCurrentset.push(currentset[i]);
+				}
+				newCurrentset = newCurrentset.join(",");
+				toolbar.setAttribute("currentset", newCurrentset);
+				toolbar.currentSet = newCurrentset;	
+				document.persist(newCurrentset, "currentset");
+			}
+		}
+
+	}
+};
+exports.removeButton = removeButton;
+
 /**
  * creates buttons with the given settings
  */
-exports.createButton = function createButton(settings) {
+function createButton(settings) {
 
 	let windows = getBrowserWindows();
 	for(let i = 0; i < windows.length; ++i) {
@@ -250,9 +290,7 @@ exports.createButton = function createButton(settings) {
 	let observer = {
 		observe: function(sub,top,dat) {
 			if(top=="domwindowopened") {
-				let window = sub;
-				// TODO: remove listener
-				
+				let window = sub;				
 				let listenToWindow = {
 						handleEvent: function() {
 						// call the buttons update method if implemented 
@@ -275,52 +313,17 @@ exports.createButton = function createButton(settings) {
 	 * and the button on uninstallation */
 	registerShutdownCallback(function(reason) {
 		Services.ww.unregisterNotification(observer);
-		if(reason==ADDON_DISABLE||reason==ADDON_UNINSTALL||reason==ADDON_UPGRADE||reason==ADDON_DOWNGRADE)
-			exports.removeButton(settings.id, false);
+		let rb = removeButton;
+
+		if(reason==ADDON_DISABLE||reason==ADDON_UNINSTALL||reason==ADDON_UPGRADE||reason==ADDON_DOWNGRADE) {
+			rb(settings.id, settings.toolbar, false);
+		}
 	});
 
 	// first start is over
 	setupReason = null;
 };
-
-/**
- * removes a toolbar button with the given id
- */
-exports.removeButton = function removeButton(id, fromCurrentset) {
-	let windows = getBrowserWindows();
-	for(let i = 0; i < windows.length; ++i) {
-		let toolbars = windows[i].document.getElementsByTagNameNS(NS_XUL, "toolbar");
-		for(let j = 0; j < toolbars.length; ++j) {
-			let toolbar = toolbars[j];
-			let oldButtons = toolbar.getElementsByClassName("toolbarbutton-1");
-			for(let k = 0; k < oldButtons.length; ++k) {
-				if(oldButtons[k].getAttribute("id") == id)
-				{
-					toolbar.removeChild(oldButtons[k]);
-					oldButtons[k] = null;
-					delete oldButtons[k];
-				}
-			}
-
-			if(fromCurrentset !== undefined && fromCurrentset === true) {
-				// additionally remove the button from the currentset
-				let currentset = toolbar.getAttribute("currentset").split(",");
-				if(currentset.indexOf(id) > -1) {
-					let newCurrentset = [];
-					for(let i = 0; i < currentset.length; ++i) {
-						if(currentset[i] !== id)
-							newCurrentset.push(currentset[i]);
-					}
-					newCurrentset = newCurrentset.join(",");
-					toolbar.setAttribute("currentset", newCurrentset);
-					toolbar.currentSet = newCurrentset;	
-					document.persist(newCurrentset, "currentset");
-				}
-			}
-
-		}
-	}
-};
+exports.createButton = createButton;
 
 /**
  * updates an attribute of a button
@@ -329,7 +332,7 @@ exports.removeButton = function removeButton(id, fromCurrentset) {
  * @return
  * the quantity of updated buttons
  */
-exports.updateAttribute = function updateAttribute(id, attribute, value) {
+ function updateAttribute(id, attribute, value) {
 	let windows = getBrowserWindows();
 	let btncount = 0;
 	for(let i = 0; i < windows.length; ++i) {
@@ -363,3 +366,4 @@ exports.updateAttribute = function updateAttribute(id, attribute, value) {
 	}
 	return btncount;
 };
+exports.updateAttribute = updateAttribute;

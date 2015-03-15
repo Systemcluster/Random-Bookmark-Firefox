@@ -93,7 +93,13 @@ function shutdown(params, reason) {
 				try{
 					require.scopes[key][kkey] = null;
 				} catch(e){}
-				delete require.scopes[key][kkey];
+				try {
+					delete require.scopes[key][kkey];
+				}
+				catch (e) {
+					// object being deleted is "unconfigurable"
+					// console.log("caught exception removing compartment: "+e)
+				}
 			}
 			require.scopes[key] = null;
 			delete require.scopes[key];

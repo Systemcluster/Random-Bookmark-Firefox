@@ -15,6 +15,7 @@
         ondialogextra2="doHelp()" 
         buttonlabelcancel="&settings.dialog.cancel;"
         ondialogcancel="doCancel();"
+        windowtype="RandomBookmark"
         >
 
   <script>
