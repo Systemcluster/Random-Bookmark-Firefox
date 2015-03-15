@@ -92,8 +92,7 @@ function openSettingsDialog() {
 	/*let dialog = Services.ww.openWindow(window, "chrome://random-bookmark/content/settingsDialog.xul",
 		"RandomBookmark", "chrome,centerscreen,dialog,dependant", null);
 	*/
-	let dialog = window.openDialog("chrome://random-bookmark/content/settingsDialog.xul",
-		"RandomBookmark", "chrome,titlebar,toolbar,centerscreen,dialog=yes,dependant,modal");
+	let dialog = window.openDialog("chrome://random-bookmark/content/settingsDialog.xul", "RandomBookmark", "chrome,toolbar,centerscreen,dependant,modal");
 
 } exports.openSettingsDialog = openSettingsDialog;
 

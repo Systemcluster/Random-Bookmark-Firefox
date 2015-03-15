@@ -16,6 +16,7 @@
         buttonlabelcancel="&settings.dialog.cancel;"
         ondialogcancel="doCancel();"
         windowtype="RandomBookmark"
+        minwidth="400"
         >
 
   <script>
@@ -53,7 +54,10 @@
         document.getElementById("normalize").setAttribute("checked", normalize);
       }
 
+      typeChanged();
+
     }
+    
     function doSave() {
 
       prefs.setBoolPref("filters_enabled", document.getElementById("enableFilter").hasAttribute("checked"));
@@ -175,21 +179,46 @@
       return filters;
     }
 
+    function typeChanged(e) {
+      function e(el) {
+        return document.getElementById(el);
+      } 
+       if(e("btn_type_combined").selected) {
+        e("grp_source").hidden = false;
+        e("grp_normalize").hidden = false;
+      }
+      else if(e("btn_type_bookmark").selected) {
+        e("grp_source").hidden = false;
+        e("grp_normalize").hidden = true;
+      }
+      else if(e("btn_type_history").selected) {
+        e("grp_source").hidden = true;
+        e("grp_normalize").hidden = false;
+      }
+     
+      window.sizeToContent();
+    }
+
+   
+
+    window.onresize=function(e) {
+
+    }
+
 
   </script>
 
-  <prefpane align="vertical">
-  
-    <vbox width="300px">
+  <prefpane id="pp"  flex="1">
+  <vbox align="stretch" flex="1" style="overflow:auto;" id="vb">
 
       <preferences>
         <preference id="buttonstyle" name="extensions.random-bookmark.buttonstyle" type="string" instantApply="true" />
-        <preference id="type" name="extensions.random-bookmark.type" type="string" instantApply="true" />
+        <preference id="type" name="extensions.random-bookmark.type" type="string" instantApply="true"  onchange="typeChanged();" />
         <preference id="filters" name="extensions.random-bookmark.filters" type="string" instantApply="false" />
         <preference id="filters_enabled" name="extensions.random-bookmark.filters_enabled" type="bool" instantApply="true" />
       </preferences>
 
-      <groupbox align="vertical">
+      <groupbox align="stretch">
         <caption label="&settings.buttonstyle;"/>
         <radiogroup preference="buttonstyle" onChange="">
           <hbox>
@@ -201,17 +230,17 @@
         </radiogroup>
       </groupbox>
       
-      <groupbox align="vertical">
+      <groupbox align="stretch">
         <caption label="&settings.type;" />
-        <radiogroup preference="type">
+        <radiogroup id="rdg_type" preference="type" >
           <vbox>
-            <radio value="bookmark" src="chrome://random-bookmark/skin/icon16-bookmark-bookmark.png" label="&settings.type.bookmark;" />
-            <radio value="history" src="chrome://random-bookmark/skin/icon16-bookmark-history.png" label="&settings.type.history;" />
-            <radio value="combined" src="chrome://random-bookmark/skin/icon16-bookmark-combined.png" label="&settings.type.combined;" />
+            <radio id="btn_type_bookmark" value="bookmark" src="chrome://random-bookmark/skin/icon16-bookmark-bookmark.png" label="&settings.type.bookmark;" />
+            <radio id="btn_type_history" value="history" src="chrome://random-bookmark/skin/icon16-bookmark-history.png" label="&settings.type.history;" />
+            <radio id="btn_type_combined" value="combined" src="chrome://random-bookmark/skin/icon16-bookmark-combined.png" label="&settings.type.combined;" />
           </vbox>
         </radiogroup>
       </groupbox>
-      <groupbox align="vertical">
+      <groupbox align="stretch" id="grp_source">
         <caption label="&settings.source;" />
         <menulist id="source">
           <menupopup>
@@ -223,24 +252,23 @@
         </menulist>
       </groupbox>
 
-      <groupbox align="vertical">
+      <groupbox align="stretch" id="grp_normalize">
         <caption label="&settings.results;" />
         <checkbox preference="normalize" label="&settings.normalized;" id="normalize" />
       </groupbox>
 
-      <groupbox align="vertical">
+      <groupbox align="stretch" flex="1">
         <caption label="&settings.filter;" />
         <textbox preference="filters" hidden="true" />
         <checkbox preference="filters_enabled" label="&settings.filter_enabled;" id="enableFilter" />
-        <button oncommand="addFilter('filtercontainer');" label="&button.addfilter;" width="320px" class="filterinput disableable" id="addfilter"/>
+        <button oncommand="addFilter('filtercontainer');" label="&button.addfilter;" class="filterinput disableable" id="addfilter" />
         
-        <vbox id="filtercontainer" width="320px">
-
+        <vbox id="filtercontainer" flex="1">
         </vbox>
       </groupbox>
 
-    </vbox>
+      </vbox>
+    </prefpane>
 
-  </prefpane>
 
 </prefwindow>

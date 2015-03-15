@@ -21,15 +21,15 @@ let settings = require("settings");
  * the node to a given folder id
  */
 function getResultNode(folders){
-    let options = historyService.getNewQueryOptions();
-    let query = historyService.getNewQuery();    
-    
-    query.setFolders(folders,1);
-    
-    let result = historyService.executeQuery(query,options);
-    let resultNode = result.root;
-    
-    return resultNode;
+	let options = historyService.getNewQueryOptions();
+	let query = historyService.getNewQuery();	
+	
+	query.setFolders(folders,1);
+	
+	let result = historyService.executeQuery(query,options);
+	let resultNode = result.root;
+	
+	return resultNode;
 }
 
 /**
@@ -38,36 +38,36 @@ function getResultNode(folders){
  */
 function getChilds(rootNode, filters){
 	let rootNodeChild = null;
-    let childs = new Array();
-    
-    for (let i = 0; i < rootNode.childCount; i++) {
+	let childs = new Array();
+	
+	for (let i = 0; i < rootNode.childCount; i++) {
 		rootNodeChild = rootNode.getChild(i);
-        
-        /* if node is a bookmark */
-        if(rootNodeChild.type === 0){
+		
+		/* if node is a bookmark */
+		if(rootNodeChild.type === 0){
 
-            /* check if uri applies a filter */
-            if(filters) for(let j = 0; j < filters.length; ++j) {
-                let reg = new RegExp("^(http(s){0,1}://){0,1}(www.){0,1}("+filters[j]+"){1}.*$");
-                if(reg.test(rootNodeChild.uri)) {
-                   childs.push(rootNodeChild);
-                   continue;
-                }
-            }
-            else {
-                childs.push(rootNodeChild);
-            }
+			/* check if uri applies a filter */
+			if(filters) for(let j = 0; j < filters.length; ++j) {
+				let reg = new RegExp("^(http(s){0,1}://){0,1}(www.){0,1}("+filters[j]+"){1}.*$");
+				if(reg.test(rootNodeChild.uri)) {
+				   childs.push(rootNodeChild);
+				   break;
+				}
+			}
+			else {
+				childs.push(rootNodeChild);
+			}
 
-        }
-        /* if node is a folder */
-        else{
-            let resultNode = getResultNode([rootNodeChild.itemId]);
-            resultNode.containerOpen = true;
-            childs = childs.concat(getChilds(resultNode, (filters?filters:null)));
-            resultNode.containerOpen = false;
-        }
-    }
-    return childs;
+		}
+		/* if node is a folder */
+		else{
+			let resultNode = getResultNode([rootNodeChild.itemId]);
+			resultNode.containerOpen = true;
+			childs = childs.concat(getChilds(resultNode, (filters?filters:null)));
+			resultNode.containerOpen = false;
+		}
+	}
+	return childs;
 }
 /**
  * @return
@@ -75,46 +75,46 @@ function getChilds(rootNode, filters){
  */
 function getAllBookmarks(filters, source){
 
-    let childs = new Array();
+	let childs = new Array();
 
-    if(source === "menu") {
-        let rootNode = getResultNode([bookmarksService.bookmarksMenuFolder]);
-        rootNode.containerOpen = true;
-        childs = childs.concat(getChilds(rootNode, (filters?filters:null)));
-        rootNode.containerOpen = false;
-    }
-    else if(source === "toolbar") {
-        let rootNode = getResultNode([bookmarksService.toolbarFolder]);
-        rootNode.containerOpen = true;
-        childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
-        rootNode.containerOpen = false;
-    }
-    else if(source === "unfiled") {
-        let rootNode = getResultNode([bookmarksService.unfiledBookmarksFolder]);
-        rootNode.containerOpen = true;
-        childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
-        rootNode.containerOpen = false;
+	if(source === "menu") {
+		let rootNode = getResultNode([bookmarksService.bookmarksMenuFolder]);
+		rootNode.containerOpen = true;
+		childs = childs.concat(getChilds(rootNode, (filters?filters:null)));
+		rootNode.containerOpen = false;
+	}
+	else if(source === "toolbar") {
+		let rootNode = getResultNode([bookmarksService.toolbarFolder]);
+		rootNode.containerOpen = true;
+		childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
+		rootNode.containerOpen = false;
+	}
+	else if(source === "unfiled") {
+		let rootNode = getResultNode([bookmarksService.unfiledBookmarksFolder]);
+		rootNode.containerOpen = true;
+		childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
+		rootNode.containerOpen = false;
 
 
-    }
-    else { // root || undefined
-        let rootNode = getResultNode([bookmarksService.bookmarksMenuFolder]);
-        rootNode.containerOpen = true;
-        childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
-        rootNode.containerOpen = false;
+	}
+	else { // root || undefined
+		let rootNode = getResultNode([bookmarksService.bookmarksMenuFolder]);
+		rootNode.containerOpen = true;
+		childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
+		rootNode.containerOpen = false;
 
-        rootNode = getResultNode([bookmarksService.toolbarFolder]);
-        rootNode.containerOpen = true;
-        childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
-        rootNode.containerOpen = false;
+		rootNode = getResultNode([bookmarksService.toolbarFolder]);
+		rootNode.containerOpen = true;
+		childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
+		rootNode.containerOpen = false;
 
-        rootNode = getResultNode([bookmarksService.unfiledBookmarksFolder]);
-        rootNode.containerOpen = true;
-        childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
-        rootNode.containerOpen = false;
-    }
+		rootNode = getResultNode([bookmarksService.unfiledBookmarksFolder]);
+		rootNode.containerOpen = true;
+		childs = childs.concat(getChilds(rootNode, (filters?filters:null)));  
+		rootNode.containerOpen = false;
+	}
 
-    return childs;
+	return childs;
 }
 
 /**
@@ -127,10 +127,10 @@ function getAllBookmarks(filters, source){
 exports.getRandomURL = function getRandomURL(filters, source, normalized) {
 	let childs = getAllBookmarks(filters, source);
 
-    if(childs.length < 1) {
-        // no bookmark at all
-        return null;
-    }
+	if(childs.length < 1) {
+		// no bookmark at all
+		return null;
+	}
 
 	// TODO: use better rand function
 	let rand = Math.floor(Math.random() * childs.length);

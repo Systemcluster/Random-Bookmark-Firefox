@@ -237,18 +237,15 @@ function getBrowserWindows() {
 	return list;
 }
 
-
-
-
 /**
  * removes a toolbar button with the given id
  */
-function removeButton(id, toolbar, fromCurrentset) {
+function removeButton(id, fromCurrentset) {
 	let windows = getBrowserWindows();
 	for(let i = 0; i < windows.length; ++i) 
 	{
-		var document = windows[i].document;	
-		var button = document.getElementById(id);
+		let document = windows[i].document;	
+		let button = document.getElementById(id);
 		if (button) {
 			try {
 				button.parentNode.removeChild(button);
@@ -257,20 +254,26 @@ function removeButton(id, toolbar, fromCurrentset) {
 				//console.log(e);
 			}
 		}
+		// additionally remove the button from the currentset
 		if(fromCurrentset === true) {
-			// additionally remove the button from the currentset
-			let currentset = toolbar.getAttribute("currentset").split(",");
-			if(currentset.indexOf(id) > -1) {
-				let newCurrentset = [];
-				for(let i = 0; i < currentset.length; ++i) {
-					if(currentset[i] !== id)
-						newCurrentset.push(currentset[i]);
+			let toolbars = document.getElementsByTagNameNS(NS_XUL, "toolbar");
+			for(let j = 0; j < toolbars.length; ++j) {
+				let toolbar = toolbars[j];
+				let currentset = toolbar.getAttribute("currentset").split(",");
+				if(currentset.indexOf(id) > -1) {
+					let newCurrentset = [];
+					for(let i = 0; i < currentset.length; ++i) {
+						if(currentset[i] !== id)
+							newCurrentset.push(currentset[i]);
+					}
+					newCurrentset = newCurrentset.join(",");
+					toolbar.setAttribute("currentset", newCurrentset);
+					toolbar.currentSet = newCurrentset;	
+					document.persist(newCurrentset, "currentset");
 				}
-				newCurrentset = newCurrentset.join(",");
-				toolbar.setAttribute("currentset", newCurrentset);
-				toolbar.currentSet = newCurrentset;	
-				document.persist(newCurrentset, "currentset");
+
 			}
+
 		}
 
 	}
@@ -279,6 +282,9 @@ exports.removeButton = removeButton;
 
 /**
  * creates buttons with the given settings
+ *
+ * @param settings
+ * see toolbarButton.js:getButton() and main.js:main()
  */
 function createButton(settings) {
 
@@ -316,7 +322,7 @@ function createButton(settings) {
 		let rb = removeButton;
 
 		if(reason==ADDON_DISABLE||reason==ADDON_UNINSTALL||reason==ADDON_UPGRADE||reason==ADDON_DOWNGRADE) {
-			rb(settings.id, settings.toolbar, false);
+			rb(settings.id, false);
 		}
 	});
 
